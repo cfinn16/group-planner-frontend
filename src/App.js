@@ -2,24 +2,29 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const usersURL = `http://localhost:3001/api/v1/users/`
+
 class App extends Component {
+  state = {
+    userId: 1,
+    data: []
+  }
+
+
+  componentDidMount() {
+    // fetch(`http://localhost:3001/api/v1/users/${this.state.userId}`)
+    fetch(`${usersURL}${this.state.userId}`)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({data})
+      })
+  }
+
   render() {
+    console.log(this.state.data)
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+
       </div>
     );
   }
