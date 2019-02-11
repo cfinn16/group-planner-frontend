@@ -27,12 +27,16 @@ const renderNewGroup = () => {
 // }
 
 // change the display based on what the state is
-const changeDisplayFromState = (input, fn) => {
+const changeDisplayFromState = (input) => {
 
-      if (input.display === "events") {
-      return renderEvents(input.data)
+      if (input.display === "events" && input.data.length > 0 ) {
+        return renderEvents(input.data)
     } else if (input.display === "new-group") {
-      return <NewGroup handleNewGroupSubmit={fn}/>
+      return <NewGroup
+      newGroupName={input.newGroupName} handleNewGroupSubmit={input.handleNewGroupSubmit} handleNewGroupNameChange={input.handleNewGroupNameChange}
+      allUsers={input.allUsers}
+      handleUserSelect={input.handleUserSelect}
+      />
     } else if (input.display === "edit-group") {
       return <h1>"edit group"</h1>
     }
@@ -56,9 +60,11 @@ const EventsContainer = (props) => {
     // }}
     // : <h1>No data in EventsContainer</h1>
 
-    (props.data.length > 0)
-    ? changeDisplayFromState(props, props.handleNewGroupSubmit)
-    : <h1>No data</h1>
+    // (props.data.length > 0)
+    <div>
+    {changeDisplayFromState(props)}
+    </div>
+    // : <h1>No data</h1>
 
   ) // end of return
 }
