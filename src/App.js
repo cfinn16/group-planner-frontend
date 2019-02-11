@@ -7,6 +7,7 @@ import EventsContainer from './EventComponents/EventsContainer.js'
 const usersURL = `http://localhost:3001/api/v1/users/`
 const groupsURL = `http://localhost:3001/api/v1/groups/`
 const userGroupsURL = `http://localhost:3001/api/v1/user_groups/`
+const eventsURL = `http://localhost:3001/api/v1/events/`
 
 class App extends Component {
   state = {
@@ -16,10 +17,15 @@ class App extends Component {
     selectedGroupId: 0,
     selectedGroupEvents: [],
     selectedEvent: [],
-    eventsContainerDisplay: "events",
+    eventsContainerDisplay: "",
     newGroupName: "",
     newGroupUsers: [],
-    newGroupId: null
+    newGroupId: null,
+    newEvent: {
+      name: "",
+      category: "",
+      description: ""
+    }
   }
 
   componentDidMount() {
@@ -103,10 +109,25 @@ class App extends Component {
       group.id === parseInt(event.target.id)
     )
 
+    let newSelectedGroupId
+    if (this.state.selectedGroupId === parseInt(event.target.id)) {
+      newSelectedGroupId = 0
+    } else {
+      newSelectedGroupId = parseInt(event.target.id)
+    }
+
+    let newEventsContainerDisplay
+    if (this.state.eventsContainerDisplay === "events") {
+      newEventsContainerDisplay = ""
+    } else {
+      newEventsContainerDisplay = "events"
+    }
+
 
     this.setState({
-      selectedGroupId: parseInt(event.target.id),
-      selectedGroupEvents: currentGroup.events
+      selectedGroupId: newSelectedGroupId,
+      selectedGroupEvents: currentGroup.events,
+      eventsContainerDisplay: newEventsContainerDisplay
     })
   }
 
@@ -118,6 +139,13 @@ class App extends Component {
     this.setState({newGroupName: event.target.value})
   }
 
+  handleNewEventChange = (event) => {
+    let newEvent = {...this.state.newEvent}
+
+    newEvent[event.target.name] = event.target.value
+    this.setState({newEvent}, console.log(this.state.newEvent))
+  }
+
   handleUserSelect = (event) => {
     let options = event.target.options;
     let selectedUsers = []
@@ -127,6 +155,32 @@ class App extends Component {
       }
     }
     this.setState({newGroupUsers: selectedUsers});
+  }
+
+  handleAddEventClick = () => {
+    this.setState({eventsContainerDisplay: "new-event"})
+  }
+
+  handleNewEventSubmit = (event) => {
+    console.log(this.state.selectedGroupId)
+    event.preventDefault()
+    fetch(eventsURL, {
+      method: "post",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: this.state.newEvent.name,
+        category: this.state.newEvent.category,
+        description: this.state.newEvent.description,
+        group_id: this.state.selectedGroupId
+      })
+    })
+    .then(res => res.json())
+    .then(something => {
+      this.setState({eventsContainerDisplay: "events"})
+    })
   }
 
   render() {
@@ -150,6 +204,9 @@ class App extends Component {
               handleNewGroupSubmit={this.handleNewGroupSubmit} newGroupName={this.state.newGroupName} handleNewGroupNameChange={this.handleNewGroupNameChange}
               allUsers={this.state.allUsers}
               handleUserSelect={this.handleUserSelect}
+              handleAddEventClick={this.handleAddEventClick}
+              newEvent={this.state.newEvent}
+              handleNewEventChange={this.handleNewEventChange}
               /></td>
             </tr>
           </tbody>

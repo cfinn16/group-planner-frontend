@@ -1,5 +1,7 @@
 import React from 'react'
 import Event from './Event.js'
+import EventsHeader from './EventsHeader.js'
+import NewEvent from './NewEvent.js'
 import NewGroup from '../GroupComponents/NewGroup.js'
 
 let selectedGroup = null
@@ -12,26 +14,22 @@ const renderEvents = (arr) => {
   })
 } // end of renderEvents()
 
-const renderNewGroup = () => {
-
-}
-
-// return findGroup(props.data.groups, props.selectedGroupId).events.map( e => {
-//   return (
-//     <Event key={e.id} eventData={e} />
-//   )
-// })
-
-// const findGroup = (array, groupId) => {
-//   return array.find( g => g.id === groupId )
-// }
-
 // change the display based on what the state is
 const changeDisplayFromState = (input) => {
 
-      if (input.display === "events" && input.data.length > 0 ) {
+    if (input.display === "events") {
+      return <EventsHeader handleAddEventClick={input.handleAddEventClick}/>
+      if (input.data.length > 0) {
         return renderEvents(input.data)
-    } else if (input.display === "new-group") {
+      }
+    } else if (input.display === "new-event") {
+      return <NewEvent
+      newEvent={input.newEvent}
+      handleNewEventChange={input.handleNewEventChange}
+      handleNewEventSubmit={input.handleNewEventSubmit}
+      />
+    }
+    else if (input.display === "new-group") {
       return <NewGroup
       newGroupName={input.newGroupName} handleNewGroupSubmit={input.handleNewGroupSubmit} handleNewGroupNameChange={input.handleNewGroupNameChange}
       allUsers={input.allUsers}
