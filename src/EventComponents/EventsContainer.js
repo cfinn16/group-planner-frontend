@@ -6,22 +6,31 @@ import NewGroup from '../GroupComponents/NewGroup.js'
 
 let selectedGroup = null
 
-const renderEvents = (arr) => {
-  return arr.map( event => {
-    return (
-      <Event key={event.id} data={event}/>
-    )
-  })
+const renderEvents = (input) => {
+  console.log("In renderEvents: ", input.data.length)
+  // return <EventsHeader handleAddEventClick={input.handleAddEventClick}/>
+  if (input.data.length > 0) {
+    return input.data.map( event => {
+      return (
+        <Event key={event.id} data={event}/>
+      )
+    })
+  }
 } // end of renderEvents()
 
 // change the display based on what the state is
 const changeDisplayFromState = (input) => {
-
+    console.log("In changeDisplayFromState", input.display)
     if (input.display === "events") {
-      return <EventsHeader handleAddEventClick={input.handleAddEventClick}/>
-      if (input.data.length > 0) {
-        return renderEvents(input.data)
-      }
+      // return <EventsHeader handleAddEventClick={input.handleAddEventClick}/>
+      // if (input.data.length > 0) {
+      return (
+        <div>
+          <EventsHeader handleAddEventClick={input.handleAddEventClick}/>
+          {renderEvents(input)}
+        </div>
+      )
+
     } else if (input.display === "new-event") {
       return <NewEvent
       newEvent={input.newEvent}
@@ -41,7 +50,7 @@ const changeDisplayFromState = (input) => {
 }
 
 const EventsContainer = (props) => {
-  // console.log("props.data in EventsContainer: ", props.data.groups)
+  console.log("props.data in EventsContainer: ", props.data)
 
 
 

@@ -102,12 +102,14 @@ class App extends Component {
   // }
 
   handleOnClickGroups = (event) => {
-    console.log("in handleOnClickGroups()", event.target.id )
+    // console.log("in handleOnClickGroups()", event.target.id )
     // console.log( this.state.data.groups.find (group => group.id === 1))
     // console.log(  this.state.data.groups.find( group => group.id === parseInt(event.target.id) ))
     const currentGroup = this.state.data.groups.find( group =>
       group.id === parseInt(event.target.id)
     )
+
+    console.log("currentGroup events are:", currentGroup.events)
 
     let newSelectedGroupId
     if (this.state.selectedGroupId === parseInt(event.target.id)) {
@@ -128,7 +130,7 @@ class App extends Component {
       selectedGroupId: newSelectedGroupId,
       selectedGroupEvents: currentGroup.events,
       eventsContainerDisplay: newEventsContainerDisplay
-    })
+    }, () => console.log(this.state.eventsContainerDisplay))
   }
 
   handleAddGroup = () => {
@@ -207,6 +209,7 @@ class App extends Component {
               handleAddEventClick={this.handleAddEventClick}
               newEvent={this.state.newEvent}
               handleNewEventChange={this.handleNewEventChange}
+              handleNewEventSubmit={this.handleNewEventSubmit}
               /></td>
             </tr>
           </tbody>
