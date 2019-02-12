@@ -1,5 +1,6 @@
 import React from 'react'
 import EditEvent from './EditEvent.js'
+import Button from 'react-materialize'
 
 
 
