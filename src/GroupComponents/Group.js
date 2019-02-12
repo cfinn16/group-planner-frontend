@@ -18,9 +18,6 @@ const Group = (props) => {
 
       }
 
-
-
-
     </div>
   )
 }

@@ -7,12 +7,20 @@ import NewGroup from '../GroupComponents/NewGroup.js'
 let selectedGroup = null
 
 const renderEvents = (input) => {
-  console.log("In renderEvents: ", input.data.length)
+  // console.log("In renderEvents: ", input.data.length)
   // return <EventsHeader handleAddEventClick={input.handleAddEventClick}/>
   if (input.data.length > 0) {
     return input.data.map( event => {
       return (
-        <Event key={event.id} data={event}/>
+        <Event key={event.id} data={event} handleOnClickEvents={input.handleOnClickEvents}
+        selectedEventId={input.selectedEventId}
+        handleEventDelete={input.handleEventDelete}
+        handleEventEditClick={input.handleEventEditClick}
+        handleEventEditSubmit={input.handleEventEditSubmit}
+        editedEvent={input.editedEvent}
+        editingEventId={input.editingEventId}
+        handleEditEventChange={input.handleEditEventChange}
+        />
       )
     })
   }
@@ -20,7 +28,7 @@ const renderEvents = (input) => {
 
 // change the display based on what the state is
 const changeDisplayFromState = (input) => {
-    console.log("In changeDisplayFromState", input.display)
+    console.log("In changeDisplayFromState", input.data)
     if (input.display === "events") {
       // return <EventsHeader handleAddEventClick={input.handleAddEventClick}/>
       // if (input.data.length > 0) {
@@ -50,28 +58,15 @@ const changeDisplayFromState = (input) => {
 }
 
 const EventsContainer = (props) => {
-  console.log("props.data in EventsContainer: ", props.data)
+  // console.log("props.data in EventsContainer: ", props.data)
 
 
 
   return (
 
-    // props.data ? <h2>{console.log("props.data.groups.events in EventsContainer: ", props.data.groups[0].events )}</h2> : <h1>No data in EventsContainer</h1>
-    //
-    // (props.data.length > 0) ? <h2>{console.log("props in EventsContainer: ", props)}</h2> : <h1>No data in EventsContainer</h1>
-    // props.data.length > 0 ?
-    //
-    // {if (props.display === "events") {
-    //     renderEvents(props.data)
-    //
-    // }}
-    // : <h1>No data in EventsContainer</h1>
-
-    // (props.data.length > 0)
     <div>
     {changeDisplayFromState(props)}
     </div>
-    // : <h1>No data</h1>
 
   ) // end of return
 }

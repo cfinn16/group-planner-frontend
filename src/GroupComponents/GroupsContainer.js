@@ -11,6 +11,7 @@ class GroupsContainer extends React.Component {
   // }
 
   renderGroups = (arr, fn) => {
+    console.log("in GroupsContainer renderGroups: ", arr)
     return arr.map( g => {
       return (
         <Group

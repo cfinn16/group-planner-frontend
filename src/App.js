@@ -16,7 +16,8 @@ class App extends Component {
     allUsers: [],
     selectedGroupId: 0,
     selectedGroupEvents: [],
-    selectedEvent: [],
+    selectedEventId: 0,
+    editingEventId: 0,
     eventsContainerDisplay: "",
     newGroupName: "",
     newGroupUsers: [],
@@ -25,8 +26,14 @@ class App extends Component {
       name: "",
       category: "",
       description: ""
+    },
+    editedEvent: {
+      id: 0,
+      name: "",
+      category: "",
+      description: ""
     }
-  }
+  } // end of state
 
   componentDidMount() {
     // fetch(`http://localhost:3001/api/v1/users/${this.state.userId}`)
@@ -41,10 +48,10 @@ class App extends Component {
       .then(allUsers => {
         this.setState({allUsers})
       })
-  }
+  } // end of componentDidMount()
 
   handleNewGroupSubmit = (event) => {
-    console.log(this.state.newGroupUsers)
+    // console.log(this.state.newGroupUsers)
     let newGroupObject = {}
     event.preventDefault()
     fetch(groupsURL, {
@@ -61,8 +68,8 @@ class App extends Component {
     .then(newGroup => {
 
       this.state.newGroupUsers.map(user => {
-          console.log("user: ", user)
-          console.log("newGroup.id: ", newGroup.id)
+          // console.log("user: ", user)
+          // console.log("newGroup.id: ", newGroup.id)
           fetch(userGroupsURL, {
             method: "post",
             headers: {
@@ -74,64 +81,149 @@ class App extends Component {
               group_id: newGroup.id
             })
           })
-      // console.log(newGroup)
-      // this.setState({newGroupId: newGroup.id})
-      // console.log(this.state.newGroupId)
         })
-      })
-     // end of then(newGroup => ... )
 
-    // this.state.newGroupUsers.map(user => {
-    //     fetch(userGroupsURL, {
-    //       method: "post",
-    //       headers: {
-    //         "Accept": "application/json",
-    //         "Content-Type": "application/json"
-    //       },
-    //       body: JSON.stringify({
-    //         user_id: user.id,
-    //         group_id: this.state.newGroupId
-    //       })
-    //     })
-    //   })
+        const data = this.state.data
 
-  }
+        this.setState({
+          eventsContainerDisplay: "",
+          data: {...data, groups: [...this.state.data.groups, newGroup]}
+        })
+
+      }) //End of then
+  } // end of handleNewGroupSubmit()
 
   // const findGroup = (array, groupId) => {
   //   return array.find( g => g.id === groupId )
   // }
 
   handleOnClickGroups = (event) => {
-    // console.log("in handleOnClickGroups()", event.target.id )
-    // console.log( this.state.data.groups.find (group => group.id === 1))
-    // console.log(  this.state.data.groups.find( group => group.id === parseInt(event.target.id) ))
     const currentGroup = this.state.data.groups.find( group =>
       group.id === parseInt(event.target.id)
     )
 
-    console.log("currentGroup events are:", currentGroup.events)
-
     let newSelectedGroupId
+    let newEventsContainerDisplay
     if (this.state.selectedGroupId === parseInt(event.target.id)) {
       newSelectedGroupId = 0
-    } else {
-      newSelectedGroupId = parseInt(event.target.id)
-    }
-
-    let newEventsContainerDisplay
-    if (this.state.eventsContainerDisplay === "events") {
       newEventsContainerDisplay = ""
     } else {
+      newSelectedGroupId = parseInt(event.target.id)
       newEventsContainerDisplay = "events"
     }
-
 
     this.setState({
       selectedGroupId: newSelectedGroupId,
       selectedGroupEvents: currentGroup.events,
       eventsContainerDisplay: newEventsContainerDisplay
-    }, () => console.log(this.state.eventsContainerDisplay))
+    })
+  } // end of handleOnClickGroups()
+
+  handleOnClickEvents = (event) => {
+    // console.log("handleOnClickEvents()", event.target.id)
+    // this will set the state of selectedEventId to the id of the event that is clicked
+    this.setState({
+      selectedEventId: parseInt(event.target.id),
+      editingEventId: 0
+    })
+    // if the event being clicked is currently the selectedEventId, switch selectedEventId to 0
+  } // end of handleOnClickEvents()
+
+  handleEventEditClick = (event) => {
+    // console.log("event.target.category: ", event.target.dataset.category)
+    let eventToEdit = {
+      id: parseInt(event.target.id),
+      name: event.target.name,
+      category: event.target.dataset.category,
+      description: event.target.dataset.description
+    }
+
+    this.setState({
+      editingEventId: parseInt(event.target.id),
+      editedEvent: eventToEdit
+    })
+  } // end of handleEventEditClick()
+
+
+  handleEditEventChange = (event) => {
+    let editedEvent = {...this.state.editedEvent}
+
+    editedEvent[event.target.name] = event.target.value
+    this.setState({editedEvent})
   }
+
+  handleEventEditSubmit = (event) => {
+    event.preventDefault()
+
+    fetch(`${eventsURL}${this.state.editingEventId}`, {
+      method: "PATCH",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: this.state.editedEvent.name,
+        category: this.state.editedEvent.category,
+        description: this.state.editedEvent.description,
+      })
+    })
+    .then(res => res.json())
+    .then(updatedEvent => {
+      const updatedGroupEvents = this.state.selectedGroupEvents.map(event => {
+        if (event.id === updatedEvent.id) {
+          return updatedEvent
+        } else {
+          return event
+        }
+      })
+
+      const updatedGroups = this.state.data.groups.map(group => {
+        if (group.id === updatedEvent.group_id) {
+          return {...group, events: updatedGroupEvents}
+        } else {
+          return group
+        }
+      })
+
+      this.setState({
+        eventsContainerDisplay: "events",
+        editingEventId: 0,
+        editedEvent: {
+          id: 0,
+          name: "",
+          category: "",
+          description: ""
+        },
+        data: {...this.state.data, groups: updatedGroups},
+        selectedGroupEvents: updatedGroupEvents
+      })
+
+    })
+
+  }
+
+  handleEventDelete = (event) => {
+    const updatedGroupEvents = this.state.selectedGroupEvents.filter(event => event.id !== this.state.selectedEventId)
+
+    const updatedGroups = this.state.data.groups.map(group => {
+      if (group.id === this.state.selectedGroupId) {
+        return {...group, events: updatedGroupEvents}
+      } else {
+        return group
+      }
+    })
+
+    fetch(`${eventsURL}${event.target.id}`, {
+      method: "DELETE"
+    })
+
+    const data = this.state.data
+
+    this.setState({
+      data: {...data, groups: updatedGroups},
+      selectedGroupEvents: updatedGroupEvents
+    }, () => console.log(this.state.data) )
+  } // end of handleEventDelete()
 
   handleAddGroup = () => {
     this.setState({eventsContainerDisplay: "new-group"})
@@ -145,7 +237,7 @@ class App extends Component {
     let newEvent = {...this.state.newEvent}
 
     newEvent[event.target.name] = event.target.value
-    this.setState({newEvent}, console.log(this.state.newEvent))
+    this.setState({newEvent})
   }
 
   handleUserSelect = (event) => {
@@ -164,7 +256,7 @@ class App extends Component {
   }
 
   handleNewEventSubmit = (event) => {
-    console.log(this.state.selectedGroupId)
+    // console.log(this.state.selectedGroupId)
     event.preventDefault()
     fetch(eventsURL, {
       method: "post",
@@ -180,13 +272,26 @@ class App extends Component {
       })
     })
     .then(res => res.json())
-    .then(something => {
-      this.setState({eventsContainerDisplay: "events"})
-    })
-  }
+    .then(newEvent => {
+      const updatedGroups = this.state.data.groups.map(group => {
+        if (group.id === newEvent.group_id) {
+          return {...group, events: group.events.push(newEvent)}
+        } else {
+          return group
+        }
+      })
+
+      const data = this.state.data
+
+      this.setState({
+        eventsContainerDisplay: "events",
+        data: {...data, groups: updatedGroups}
+      }) // end of this.setState
+
+    }) // end of then
+  } // end of handleNewEventSubmit()
 
   render() {
-    console.log("in render(): ", this.state.allUsers)
     // console.log("selectedGroupEvents: ", this.state.selectedGroupEvents)
     return (
       <div className="App">
@@ -210,6 +315,14 @@ class App extends Component {
               newEvent={this.state.newEvent}
               handleNewEventChange={this.handleNewEventChange}
               handleNewEventSubmit={this.handleNewEventSubmit}
+              handleOnClickEvents={this.handleOnClickEvents}
+              selectedEventId={this.state.selectedEventId}
+              handleEventDelete={this.handleEventDelete}
+              handleEventEditClick={this.handleEventEditClick}
+              handleEventEditSubmit={this.handleEventEditSubmit}
+              editedEvent={this.state.editedEvent}
+              editingEventId={this.state.editingEventId}
+              handleEditEventChange={this.handleEditEventChange}
               /></td>
             </tr>
           </tbody>
