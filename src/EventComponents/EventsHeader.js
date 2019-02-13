@@ -5,9 +5,11 @@ const EventsHeader = (props) => {
   return (
 
     <div>
-      <h4>Events</h4>
+      <br />
+      <h4 className="header-text">Events </h4>
 
       <Button
+        floating
         icon="add"
         onClick={props.handleAddEventClick} />
     </div>

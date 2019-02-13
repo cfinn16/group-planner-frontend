@@ -7,7 +7,6 @@ class GroupsContainer extends React.Component {
 
 
   renderGroups = (arr, fn) => {
-
     return arr.map( g => {
       return (
         <Group
@@ -21,12 +20,14 @@ class GroupsContainer extends React.Component {
   } // end of renderGroups
 
   render() {
-
     return (
 
-      <div>
-        <h4>My Groups</h4>
+      <div className="">
+        <br />
+        <h4 className="header-text">My Groups </h4>
           <Button
+            className=""
+            floating
             waves="light"
             icon="add"
             onClick={this.props.handleAddGroup} />

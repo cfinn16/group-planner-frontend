@@ -26,6 +26,7 @@ const renderEvent = (props) => {
         <p>Description: {props.data.description} </p>
 
         <Button
+          className=""
           id={props.data.id}
           name={props.data.name}
           data-category={props.data.category}
@@ -35,6 +36,7 @@ const renderEvent = (props) => {
         </Button>
 
         <Button
+          className=""
           id={props.data.id}
           onClick={props.handleEventDelete} >
           Delete
@@ -52,7 +54,7 @@ const renderEvent = (props) => {
 const Event = (props) => {
   return (
 
-    <div className="card-panel teal">
+    <div className="card-panel teal card-text">
       <h4
         id={props.data.id}
         onClick={ (event) => props.handleOnClickEvents(event) } >

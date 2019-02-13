@@ -1,7 +1,7 @@
 import React from 'react'
+import {Button} from 'react-materialize'
 
 const EditEvent = (props) => {
-  
   return (
 
     <form onSubmit={ (event) => {props.handleEventEditSubmit(event)} } >
@@ -27,9 +27,7 @@ const EditEvent = (props) => {
         value={props.editedEvent.description} />
       <br />
 
-      <input
-        type="submit"
-        value="Edit Event" />
+      <Button className="" type="submit">Edit Event</Button>
 
     </form>
 
