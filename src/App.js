@@ -6,7 +6,7 @@ import logo from './logo.svg';
 import './App.css';
 import GroupsContainer from './GroupComponents/GroupsContainer.js'
 import EventsContainer from './EventComponents/EventsContainer.js'
-import {SideNav, Row} from 'react-materialize'
+import {Row, Navbar, NavItem} from 'react-materialize'
 
 
 /*************************** END OF IMPORTS ***************************/
@@ -25,7 +25,7 @@ const eventsURL = `http://localhost:3001/api/v1/events/`
 
 
 
-
+// start of App class
 class App extends Component {
 
 
@@ -100,20 +100,21 @@ class App extends Component {
     } else {
       newSelectedGroupId = parseInt(event.target.id)
       newEventsContainerDisplay = "events"
+
+      this.setState({
+        selectedGroupId: newSelectedGroupId,
+        selectedGroupEvents: currentGroup.events,
+        eventsContainerDisplay: newEventsContainerDisplay
+      })
     }
 
-    this.setState({
-      selectedGroupId: newSelectedGroupId,
-      selectedGroupEvents: currentGroup.events,
-      eventsContainerDisplay: newEventsContainerDisplay
-    })
   } // end of handleOnClickGroups()
 /* -------------------------------------------------------------------*/
 
 
 /* -------------------------------------------------------------------*/
   handleNewGroupSubmit = (event) => {
-    let newGroupObject = {}
+    // let newGroupObject = {}
 
     event.preventDefault()
 
@@ -187,7 +188,6 @@ class App extends Component {
 /************************ END OF GROUP FUNCTIONS **********************/
 
 
-
 /************************** EVENT FUNCTIONS ***************************/
 
 
@@ -197,6 +197,7 @@ class App extends Component {
       selectedEventId: parseInt(event.target.id),
       editingEventId: 0
     })
+
   } // end of handleOnClickEvents()
 /* -------------------------------------------------------------------*/
 
@@ -341,9 +342,10 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(newEvent => {
+
       const updatedGroups = this.state.data.groups.map(group => {
         if (group.id === newEvent.group_id) {
-          return {...group, events: group.events.push(newEvent)}
+          return {...group, events: group.events.concat(newEvent)}
         } else {
           return group
         }
@@ -353,7 +355,8 @@ class App extends Component {
 
       this.setState({
         eventsContainerDisplay: "events",
-        data: {...data, groups: updatedGroups}
+        data: {...data, groups: updatedGroups},
+        selectedGroupEvents: [...this.state.selectedGroupEvents, newEvent]
       }) // end of this.setState
     }) // end of .then(newEvent => ... )
   } // end of handleNewEventSubmit()
@@ -376,37 +379,44 @@ class App extends Component {
 
     return (
       <div className="App">
-        <SideNav fixed>
-          <GroupsContainer
-            data={this.state.data}
-            handleOnClickGroups={this.handleOnClickGroups}
-            selectedGroupId={this.state.selectedGroupId}
-            handleAddGroup={this.handleAddGroup} />
-        </SideNav>
 
-        <Row class="col s12 m9 l10">
+        <Navbar brand='WePlan' right>
+          <NavItem onClick={() => console.log('test click')}>Getting started</NavItem>
+          <NavItem href='components.html'>Components</NavItem>
+        </Navbar>
 
-          <EventsContainer
-            data={this.state.selectedGroupEvents}
-            display={this.state.eventsContainerDisplay}
-            handleNewGroupSubmit={this.handleNewGroupSubmit}
-            newGroupName={this.state.newGroupName}
-            handleNewGroupNameChange={this.handleNewGroupNameChange}
-            allUsers={this.state.allUsers}
-            handleUserSelect={this.handleUserSelect}
-            handleAddEventClick={this.handleAddEventClick}
-            newEvent={this.state.newEvent}
-            handleNewEventChange={this.handleNewEventChange}
-            handleNewEventSubmit={this.handleNewEventSubmit}
-            handleOnClickEvents={this.handleOnClickEvents}
-            selectedEventId={this.state.selectedEventId}
-            handleEventDelete={this.handleEventDelete}
-            handleEventEditClick={this.handleEventEditClick}
-            handleEventEditSubmit={this.handleEventEditSubmit}
-            editedEvent={this.state.editedEvent}
-            editingEventId={this.state.editingEventId}
-            handleEditEventChange={this.handleEditEventChange} />
-          </Row>
+        <Row>
+          <div className="col s3">
+            <GroupsContainer
+              data={this.state.data}
+              handleOnClickGroups={this.handleOnClickGroups}
+              selectedGroupId={this.state.selectedGroupId}
+              handleAddGroup={this.handleAddGroup} />
+          </div>
+
+          <div className="col s9">
+            <EventsContainer
+              data={this.state.selectedGroupEvents}
+              display={this.state.eventsContainerDisplay}
+              handleNewGroupSubmit={this.handleNewGroupSubmit}
+              newGroupName={this.state.newGroupName}
+              handleNewGroupNameChange={this.handleNewGroupNameChange}
+              allUsers={this.state.allUsers}
+              handleUserSelect={this.handleUserSelect}
+              handleAddEventClick={this.handleAddEventClick}
+              newEvent={this.state.newEvent}
+              handleNewEventChange={this.handleNewEventChange}
+              handleNewEventSubmit={this.handleNewEventSubmit}
+              handleOnClickEvents={this.handleOnClickEvents}
+              selectedEventId={this.state.selectedEventId}
+              handleEventDelete={this.handleEventDelete}
+              handleEventEditClick={this.handleEventEditClick}
+              handleEventEditSubmit={this.handleEventEditSubmit}
+              editedEvent={this.state.editedEvent}
+              editingEventId={this.state.editingEventId}
+              handleEditEventChange={this.handleEditEventChange} />
+          </div>
+        </Row>
       </div>
     );
   } // end of render()

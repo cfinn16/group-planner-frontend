@@ -1,25 +1,35 @@
 import React from 'react'
-import {SideNavItem} from 'react-materialize'
 
 
-// const handleIsGroupClicked = (input) => {
-//   return input.groupData.users.map( user => {
-//       return <li>{}
-//     })
-// }
+const showUsers = (props) => {
+  let namesArray = []
+
+    props.groupData.users.map( user => {
+      namesArray.push(user.name)
+    })
+
+    return namesArray.join(", ")
+} // end of showUsers
+
+
 const Group = (props) => {
   return (
-    <div className="single-group">
+    <div className="card-panel teal card-text">
+      <h4
+        id={props.groupData.id}
+        onClick={ (event) => props.handleOnClickGroups(event) } >
 
-      <h4 Id={props.groupData.id} onClick={(event) => props.handleOnClickGroups(event)}> {props.groupData.name} </h4>
+        { props.groupData.name }
+
+      </h4>
 
       {
         props.selectedGroupId === props.groupData.id
-        && <ul>{props.groupData.users.map( user => { return <li key={user.id}>{user.name}</li> } ) } </ul>
+        && <div>{showUsers(props)}</div>
       }
 
     </div>
-  )
-}
+  ) // end of return
+} // end of Group
 
 export default Group

@@ -12,3 +12,32 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+div.events-container {
+  background-color: red;
+  column-width: 500px;
+}
+
+Button.delete-event {
+  background-color: #d32f2f;
+}
+
+Button.edit-event {
+  background-color: #fafafa;
+  color: #009688;
+}
+
+h4.header-text {
+  display: inline;
+  top: 5px;
+  color: teal;
+}
+
+div.card-text {
+  color: white;
+  text-align: left;
+}
+
+Button.add-buttons {
+
+}
