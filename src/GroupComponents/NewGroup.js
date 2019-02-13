@@ -12,11 +12,13 @@ const NewGroup = (props) => {
     <div>
       <form onSubmit={(event) => props.handleNewGroupSubmit(event)} id="newGroup">
         <input onChange={(event) => props.handleNewGroupNameChange(event)} type="text" name="groupName" placeholder="Group Name" value={props.newGroupName} /><br />
-        <select multiple onChange={(event => props.handleUserSelect(event))}>
-          {props.allUsers.map(user => {
-            return <option value={user.id}>{user.name}</option>
-          })}
-        </select><br />
+        <div class="input-field">
+          <select multiple onChange={(event => props.handleUserSelect(event))}>
+            {props.allUsers.map(user => {
+              return <option value={user.id}>{user.name}</option>
+            })}
+          </select><br />
+        </div>
 
         <input type="submit" value="Create Group" />
       </form>
