@@ -1,15 +1,37 @@
+/******************************* IMPORTS ******************************/
+
+
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import GroupsContainer from './GroupComponents/GroupsContainer.js'
 import EventsContainer from './EventComponents/EventsContainer.js'
+import {SideNav, Row} from 'react-materialize'
+
+
+/*************************** END OF IMPORTS ***************************/
+
+
+/************************ CONSTANTS ***********************************/
+
 
 const usersURL = `http://localhost:3001/api/v1/users/`
 const groupsURL = `http://localhost:3001/api/v1/groups/`
 const userGroupsURL = `http://localhost:3001/api/v1/user_groups/`
 const eventsURL = `http://localhost:3001/api/v1/events/`
 
+
+/************************ END OF CONSTANTS ****************************/
+
+
+
+
 class App extends Component {
+
+
+/**************************** STATE ***********************************/
+
+
   state = {
     userId: 1,
     data: null,
@@ -35,8 +57,14 @@ class App extends Component {
     }
   } // end of state
 
+
+/********************* END OF STATE ***********************************/
+
+
+/**************************** INITIAL FETCH ***************************/
+
+
   componentDidMount() {
-    // fetch(`http://localhost:3001/api/v1/users/${this.state.userId}`)
     fetch(`${usersURL}${this.state.userId}`)
       .then(res => res.json())
       .then(data => {
@@ -50,53 +78,14 @@ class App extends Component {
       })
   } // end of componentDidMount()
 
-  handleNewGroupSubmit = (event) => {
-    // console.log(this.state.newGroupUsers)
-    let newGroupObject = {}
-    event.preventDefault()
-    fetch(groupsURL, {
-      method: "post",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: this.state.newGroupName,
-      })
-    })
-    .then(res => res.json())
-    .then(newGroup => {
 
-      this.state.newGroupUsers.map(user => {
-          // console.log("user: ", user)
-          // console.log("newGroup.id: ", newGroup.id)
-          fetch(userGroupsURL, {
-            method: "post",
-            headers: {
-              "Accept": "application/json",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              user_id: user,
-              group_id: newGroup.id
-            })
-          })
-        })
+/**************************** END OF INITIAL FETCH*********************/
 
-        const data = this.state.data
 
-        this.setState({
-          eventsContainerDisplay: "",
-          data: {...data, groups: [...this.state.data.groups, newGroup]}
-        })
+/**************************** GROUP FUNCTIONS *************************/
 
-      }) //End of then
-  } // end of handleNewGroupSubmit()
 
-  // const findGroup = (array, groupId) => {
-  //   return array.find( g => g.id === groupId )
-  // }
-
+/* -------------------------------------------------------------------*/
   handleOnClickGroups = (event) => {
     const currentGroup = this.state.data.groups.find( group =>
       group.id === parseInt(event.target.id)
@@ -104,6 +93,7 @@ class App extends Component {
 
     let newSelectedGroupId
     let newEventsContainerDisplay
+
     if (this.state.selectedGroupId === parseInt(event.target.id)) {
       newSelectedGroupId = 0
       newEventsContainerDisplay = ""
@@ -118,19 +108,101 @@ class App extends Component {
       eventsContainerDisplay: newEventsContainerDisplay
     })
   } // end of handleOnClickGroups()
+/* -------------------------------------------------------------------*/
 
+
+/* -------------------------------------------------------------------*/
+  handleNewGroupSubmit = (event) => {
+    let newGroupObject = {}
+
+    event.preventDefault()
+
+    fetch(groupsURL, {
+      method: "post",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: this.state.newGroupName,
+      })
+    })
+    .then(res => res.json())
+    .then(newGroup => {
+
+      this.state.newGroupUsers.map(user => {
+          fetch(userGroupsURL, {
+            method: "post",
+            headers: {
+              "Accept": "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              user_id: user,
+              group_id: newGroup.id
+            })
+          })
+        }) // end of this.state.newGroupUsers.map
+
+        const data = this.state.data
+
+        this.setState({
+          eventsContainerDisplay: "",
+          data: {...data, groups: [...this.state.data.groups, newGroup]}
+        }) // end of this.setState
+      }) // end of .then
+  } // end of handleNewGroupSubmit()
+/* -------------------------------------------------------------------*/
+
+
+/* -------------------------------------------------------------------*/
+  handleAddGroup = () => {
+    this.setState({eventsContainerDisplay: "new-group"})
+  } // end of handleAddGroup()
+/* -------------------------------------------------------------------*/
+
+
+/* -------------------------------------------------------------------*/
+  handleNewGroupNameChange = (event) => {
+    this.setState({newGroupName: event.target.value})
+  } // end of handleNewGroupNameChange()
+/* -------------------------------------------------------------------*/
+
+
+/* -------------------------------------------------------------------*/
+  handleUserSelect = (event) => {
+    let options = event.target.options;
+    let selectedUsers = []
+    for (let i = 0, l = options.length; i < l; i++) {
+      if (options[i].selected) {
+        selectedUsers.push(parseInt(options[i].value, 10));
+      }
+    } // end of for
+
+    this.setState({newGroupUsers: selectedUsers});
+  } // end of handleUserSelect()
+/* -------------------------------------------------------------------*/
+
+
+/************************ END OF GROUP FUNCTIONS **********************/
+
+
+
+/************************** EVENT FUNCTIONS ***************************/
+
+
+/* -------------------------------------------------------------------*/
   handleOnClickEvents = (event) => {
-    // console.log("handleOnClickEvents()", event.target.id)
-    // this will set the state of selectedEventId to the id of the event that is clicked
     this.setState({
       selectedEventId: parseInt(event.target.id),
       editingEventId: 0
     })
-    // if the event being clicked is currently the selectedEventId, switch selectedEventId to 0
   } // end of handleOnClickEvents()
+/* -------------------------------------------------------------------*/
 
+
+/* -------------------------------------------------------------------*/
   handleEventEditClick = (event) => {
-    // console.log("event.target.category: ", event.target.dataset.category)
     let eventToEdit = {
       id: parseInt(event.target.id),
       name: event.target.name,
@@ -143,15 +215,20 @@ class App extends Component {
       editedEvent: eventToEdit
     })
   } // end of handleEventEditClick()
+/* -------------------------------------------------------------------*/
 
 
+/* -------------------------------------------------------------------*/
   handleEditEventChange = (event) => {
     let editedEvent = {...this.state.editedEvent}
 
     editedEvent[event.target.name] = event.target.value
     this.setState({editedEvent})
-  }
+  } // end of handleEditEventChange()
+/* -------------------------------------------------------------------*/
 
+
+/* -------------------------------------------------------------------*/
   handleEventEditSubmit = (event) => {
     event.preventDefault()
 
@@ -196,12 +273,13 @@ class App extends Component {
         },
         data: {...this.state.data, groups: updatedGroups},
         selectedGroupEvents: updatedGroupEvents
-      })
+      }) // end of this.setState
+    }) // end of .then(updatedEvent => ... )
+  } // end of handleEventEditSubmit()
+/* -------------------------------------------------------------------*/
 
-    })
 
-  }
-
+/* -------------------------------------------------------------------*/
   handleEventDelete = (event) => {
     const updatedGroupEvents = this.state.selectedGroupEvents.filter(event => event.id !== this.state.selectedEventId)
 
@@ -211,7 +289,7 @@ class App extends Component {
       } else {
         return group
       }
-    })
+    }) // end of updatedGroups
 
     fetch(`${eventsURL}${event.target.id}`, {
       method: "DELETE"
@@ -224,40 +302,30 @@ class App extends Component {
       selectedGroupEvents: updatedGroupEvents
     }, () => console.log(this.state.data) )
   } // end of handleEventDelete()
+/* -------------------------------------------------------------------*/
 
-  handleAddGroup = () => {
-    this.setState({eventsContainerDisplay: "new-group"})
-  }
 
-  handleNewGroupNameChange = (event) => {
-    this.setState({newGroupName: event.target.value})
-  }
-
+/* -------------------------------------------------------------------*/
   handleNewEventChange = (event) => {
     let newEvent = {...this.state.newEvent}
 
     newEvent[event.target.name] = event.target.value
     this.setState({newEvent})
-  }
+  } // end of handleNewEventChange()
+/* -------------------------------------------------------------------*/
 
-  handleUserSelect = (event) => {
-    let options = event.target.options;
-    let selectedUsers = []
-    for (let i = 0, l = options.length; i < l; i++) {
-      if (options[i].selected) {
-        selectedUsers.push(parseInt(options[i].value, 10));
-      }
-    }
-    this.setState({newGroupUsers: selectedUsers});
-  }
 
+/* -------------------------------------------------------------------*/
   handleAddEventClick = () => {
     this.setState({eventsContainerDisplay: "new-event"})
-  }
+  } // handleAddEventClick()
+/* -------------------------------------------------------------------*/
 
+
+/* -------------------------------------------------------------------*/
   handleNewEventSubmit = (event) => {
-    // console.log(this.state.selectedGroupId)
     event.preventDefault()
+
     fetch(eventsURL, {
       method: "post",
       headers: {
@@ -279,7 +347,7 @@ class App extends Component {
         } else {
           return group
         }
-      })
+      }) // end of updatedGroups
 
       const data = this.state.data
 
@@ -287,49 +355,64 @@ class App extends Component {
         eventsContainerDisplay: "events",
         data: {...data, groups: updatedGroups}
       }) // end of this.setState
-
-    }) // end of then
+    }) // end of .then(newEvent => ... )
   } // end of handleNewEventSubmit()
+/* -------------------------------------------------------------------*/
+
+
+/*********************** END OF EVENT FUNCTIONS ***********************/
+
+
+/*********************** MISC FUNCTIONS *******************************/
+
+//nothing in here
+
+/*********************** END OF MISC FUNCTIONS ************************/
+
+
+/******************************* RENDER *******************************/
 
   render() {
-    // console.log("selectedGroupEvents: ", this.state.selectedGroupEvents)
+
     return (
       <div className="App">
-        <table>
-          <tbody>
-            <tr>
-              <th>My Groups<button onClick={this.handleAddGroup}>+</button></th>
-              <th><h1>Events</h1></th>
-            </tr>
-            <tr>
-              <td><GroupsContainer data={this.state.data} handleOnClickGroups={this.handleOnClickGroups}
-              selectedGroupId={this.state.selectedGroupId}
-              /></td>
+        <SideNav fixed>
+          <GroupsContainer
+            data={this.state.data}
+            handleOnClickGroups={this.handleOnClickGroups}
+            selectedGroupId={this.state.selectedGroupId}
+            handleAddGroup={this.handleAddGroup} />
+        </SideNav>
 
-              <td><EventsContainer
-              data={this.state.selectedGroupEvents} display={this.state.eventsContainerDisplay}
-              handleNewGroupSubmit={this.handleNewGroupSubmit} newGroupName={this.state.newGroupName} handleNewGroupNameChange={this.handleNewGroupNameChange}
-              allUsers={this.state.allUsers}
-              handleUserSelect={this.handleUserSelect}
-              handleAddEventClick={this.handleAddEventClick}
-              newEvent={this.state.newEvent}
-              handleNewEventChange={this.handleNewEventChange}
-              handleNewEventSubmit={this.handleNewEventSubmit}
-              handleOnClickEvents={this.handleOnClickEvents}
-              selectedEventId={this.state.selectedEventId}
-              handleEventDelete={this.handleEventDelete}
-              handleEventEditClick={this.handleEventEditClick}
-              handleEventEditSubmit={this.handleEventEditSubmit}
-              editedEvent={this.state.editedEvent}
-              editingEventId={this.state.editingEventId}
-              handleEditEventChange={this.handleEditEventChange}
-              /></td>
-            </tr>
-          </tbody>
-        </table>
+        <Row class="col s12 m9 l10">
+
+          <EventsContainer
+            data={this.state.selectedGroupEvents}
+            display={this.state.eventsContainerDisplay}
+            handleNewGroupSubmit={this.handleNewGroupSubmit}
+            newGroupName={this.state.newGroupName}
+            handleNewGroupNameChange={this.handleNewGroupNameChange}
+            allUsers={this.state.allUsers}
+            handleUserSelect={this.handleUserSelect}
+            handleAddEventClick={this.handleAddEventClick}
+            newEvent={this.state.newEvent}
+            handleNewEventChange={this.handleNewEventChange}
+            handleNewEventSubmit={this.handleNewEventSubmit}
+            handleOnClickEvents={this.handleOnClickEvents}
+            selectedEventId={this.state.selectedEventId}
+            handleEventDelete={this.handleEventDelete}
+            handleEventEditClick={this.handleEventEditClick}
+            handleEventEditSubmit={this.handleEventEditSubmit}
+            editedEvent={this.state.editedEvent}
+            editingEventId={this.state.editingEventId}
+            handleEditEventChange={this.handleEditEventChange} />
+          </Row>
       </div>
     );
-  }
-}
+  } // end of render()
+
+/*************************** END OF RENDER ****************************/
+
+} // end of App
 
 export default App;
