@@ -60,12 +60,11 @@ const changeDisplayFromState = (input) => {
 const EventsContainer = (props) => {
   // console.log("props.data in EventsContainer: ", props.data)
 
-
-
   return (
 
     <div>
-    {changeDisplayFromState(props)}
+      <h1>Events</h1>
+      {changeDisplayFromState(props)}
     </div>
 
   ) // end of return
