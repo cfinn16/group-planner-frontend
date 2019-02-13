@@ -1,33 +1,44 @@
 import React from 'react'
-import {Input, Row} from 'react-materialize'
+import {Input, Row, Button} from 'react-materialize'
 
-// const showAllUsers = (input) => {
-//   return input.allUsers.map(user => {
-//     return <option value={user.id}>{user.name}</option>
-//   })
-// }
 
 const NewGroup = (props) => {
-
   return (
+
     <div>
+      <h4>New Group</h4>
 
-      <form onSubmit={(event) => props.handleNewGroupSubmit(event)} id="newGroup">
-        <Row>
-          <Input onChange={(event) => props.handleNewGroupNameChange(event)} type="text" name="groupName" placeholder="Group Name" value={props.newGroupName} /><br />
-          <Input type="select" label="Materialize Select" multiple onChange={(event => props.handleUserSelect(event))}>
-            {props.allUsers.map(user => {
-              return <option value={user.id}>{user.name}</option>
-            })}
-          </Input><br />
+      <form
+        onSubmit={ (event) => props.handleNewGroupSubmit(event) }
+        id="newGroup" >
 
-          <Input type="submit" value="Create Group" />
-        </Row>
+          <Input
+            onChange={ (event) => props.handleNewGroupNameChange(event) }
+            type="text"
+            name="groupName"
+            label="Group Name"
+            value={props.newGroupName} />
+
+          <Input
+            type="select"
+            label="Select Users"
+            multiple
+            onChange={ (event => props.handleUserSelect(event)) } >
+
+              {
+                props.allUsers.map(user => {
+                  return <option value={user.id}>{user.name}</option>
+                })
+              }
+
+          </Input>
+
+          <Button type="submit">Create Group</Button>
+
       </form>
-
-
     </div>
-  )
-}
+
+  ) // end of return
+} // end of NewGroup
 
 export default NewGroup
