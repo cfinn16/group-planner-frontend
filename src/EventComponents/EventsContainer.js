@@ -20,6 +20,7 @@ const renderEvents = (input) => {
 
         <Event
           key={event.id}
+          userId={input.userId}
           data={event}
           handleOnClickEvents={input.handleOnClickEvents}
           selectedEventId={input.selectedEventId}

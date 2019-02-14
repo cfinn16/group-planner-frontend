@@ -33,7 +33,7 @@ class App extends Component {
 
 
   state = {
-    // userId: 1,
+    userId: 0,
     data: null,
     allUsers: [],
     selectedGroupId: 0,
@@ -75,7 +75,10 @@ class App extends Component {
     fetch(`${usersURL}${this.props.userId}`)
       .then(res => res.json())
       .then(data => {
-        this.setState({data})
+        this.setState({
+          data: data,
+          userId: this.props.userId
+        })
       })
 
     fetch(usersURL)
@@ -385,7 +388,7 @@ class App extends Component {
 handleNewCommentChange = (event) => {
   this.setState({
     newComment: {
-      userId: this.state.userId,
+      userId: this.props.userId,
       eventId: this.state.selectedEventId,
       content: event.target.value
     } // end of this.setState
@@ -405,7 +408,7 @@ handleNewCommentSubmit = (event) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      user_id: this.state.newComment.userId,
+      user_id: this.state.userId,
       event_id: this.state.newComment.eventId,
       content: this.state.newComment.content
     })
@@ -459,8 +462,7 @@ handleNewCommentSubmit = (event) => {
       <div className="App">
 
         <Navbar brand='WePlan' right>
-          <NavItem onClick={() => console.log('test click')}>Getting started</NavItem>
-          <NavItem href='components.html'>Components</NavItem>
+      
         </Navbar>
 
         <Row>
