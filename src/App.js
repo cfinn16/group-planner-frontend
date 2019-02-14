@@ -149,7 +149,9 @@ class App extends Component {
 
         this.setState({
           eventsContainerDisplay: "",
-          data: {...data, groups: [...this.state.data.groups, newGroup]}
+          data: {...data, groups: [...this.state.data.groups, newGroup]},
+          newGroupName: "",
+          newGroupUsers: []
         }) // end of this.setState
       }) // end of .then
   } // end of handleNewGroupSubmit()
@@ -356,7 +358,8 @@ class App extends Component {
       this.setState({
         eventsContainerDisplay: "events",
         data: {...data, groups: updatedGroups},
-        selectedGroupEvents: [...this.state.selectedGroupEvents, newEvent]
+        selectedGroupEvents: [...this.state.selectedGroupEvents, newEvent],
+        newEvent: {}
       }) // end of this.setState
     }) // end of .then(newEvent => ... )
   } // end of handleNewEventSubmit()

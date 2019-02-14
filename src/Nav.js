@@ -45,20 +45,20 @@ export default class Nav extends React.Component {
     <Router>
       <div>
         <Switch>
+          <Route
+          path="/signup"
+          render={(props) => (
+            <SignUpForm {...props}
+            handleLogInSubmit={this.handleLogInSubmit}
+            handleLogInInput={this.handleLogInInput}
+            logInName={this.state.logInName}
+            logInEmail={this.state.logInEmail}
+            />
+          )}/>
           <Route exact path="/"
             render={(props) => (
             <App {...props} userId={this.state.userId}/>
             )}/>
-          <Route
-          path="/signup"
-          render={(props) => (
-          <SignUpForm {...props}
-          handleLogInSubmit={this.handleLogInSubmit}
-          handleLogInInput={this.handleLogInInput}
-          logInName={this.state.logInName}
-          logInEmail={this.state.logInEmail}
-          />
-          )}/>
         </Switch>
         {this.state.successfulLogin && <Redirect to="/" push />}
       </div>
