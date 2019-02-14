@@ -29,12 +29,11 @@ const commentsURL = `http://localhost:3001/api/v1/comments/`
 // start of App class
 class App extends Component {
 
-
 /**************************** STATE ***********************************/
 
 
   state = {
-    userId: 2,
+    // userId: 1,
     data: null,
     allUsers: [],
     selectedGroupId: 0,
@@ -72,7 +71,8 @@ class App extends Component {
 
 
   componentDidMount() {
-    fetch(`${usersURL}${this.state.userId}`)
+    console.log("Mounted")
+    fetch(`${usersURL}${this.props.userId}`)
       .then(res => res.json())
       .then(data => {
         this.setState({data})
@@ -156,7 +156,9 @@ class App extends Component {
 
         this.setState({
           eventsContainerDisplay: "",
-          data: {...data, groups: [...this.state.data.groups, newGroup]}
+          data: {...data, groups: [...this.state.data.groups, newGroup]},
+          newGroupName: "",
+          newGroupUsers: []
         }) // end of this.setState
       }) // end of .then
   } // end of handleNewGroupSubmit()
@@ -366,7 +368,8 @@ class App extends Component {
       this.setState({
         eventsContainerDisplay: "events",
         data: {...data, groups: updatedGroups},
-        selectedGroupEvents: [...this.state.selectedGroupEvents, newEvent]
+        selectedGroupEvents: [...this.state.selectedGroupEvents, newEvent],
+        newEvent: {}
       }) // end of this.setState
     }) // end of .then(newEvent => ... )
   } // end of handleNewEventSubmit()
@@ -452,7 +455,6 @@ handleNewCommentSubmit = (event) => {
 /******************************* RENDER *******************************/
 
   render() {
-
     return (
       <div className="App">
 
