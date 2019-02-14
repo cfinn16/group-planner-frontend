@@ -45,6 +45,7 @@ const renderEvent = (props) => {
 
         <CommentsContainer
           commentsData={props.data.comments}
+          userId={props.userId}
           allUsers={props.allUsers}
           newComment={props.newComment}
           handleNewCommentChange={props.handleNewCommentChange}

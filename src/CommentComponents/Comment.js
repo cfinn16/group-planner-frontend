@@ -2,6 +2,7 @@ import React from 'react'
 
 const findUser = (input) => {
   return (input.allUsers.find( user => user.id === input.userId))
+  console.log("In findUser:", input)
 }
 
 const Comment = (props) => {

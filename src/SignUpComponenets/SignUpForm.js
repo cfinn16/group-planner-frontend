@@ -1,5 +1,5 @@
 import React from 'react'
-import {Input, Row} from 'react-materialize'
+import {Input, Row, Button} from 'react-materialize'
 
 
 
@@ -18,7 +18,7 @@ const SignUpForm = (props) => {
             <Input onChange={(event) => props.handleLogInInput(event)} type="text" name="logInEmail" placeholder="Enter Email" value={props.logInEmail}/>
           </Row>
           <Row>
-            <Input type="submit" value="Log In"/>
+            <Button type="submit">Log In</Button>
           </Row>
         </form>
       </div>
