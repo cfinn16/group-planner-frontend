@@ -28,12 +28,11 @@ const eventsURL = `http://localhost:3001/api/v1/events/`
 // start of App class
 class App extends Component {
 
-
 /**************************** STATE ***********************************/
 
 
   state = {
-    userId: 1,
+    // userId: 1,
     data: null,
     allUsers: [],
     selectedGroupId: 0,
@@ -65,7 +64,8 @@ class App extends Component {
 
 
   componentDidMount() {
-    fetch(`${usersURL}${this.state.userId}`)
+    console.log("Mounted")
+    fetch(`${usersURL}${this.props.userId}`)
       .then(res => res.json())
       .then(data => {
         this.setState({data})
@@ -376,7 +376,6 @@ class App extends Component {
 /******************************* RENDER *******************************/
 
   render() {
-
     return (
       <div className="App">
 
