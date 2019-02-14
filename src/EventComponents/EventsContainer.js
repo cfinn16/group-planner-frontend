@@ -4,6 +4,7 @@ import EventsHeader from './EventsHeader.js'
 import NewEvent from './NewEvent.js'
 import NewGroup from '../GroupComponents/NewGroup.js'
 
+
 // is this used??
 // let selectedGroup = null
 
@@ -27,7 +28,11 @@ const renderEvents = (input) => {
           handleEventEditSubmit={input.handleEventEditSubmit}
           editedEvent={input.editedEvent}
           editingEventId={input.editingEventId}
-          handleEditEventChange={input.handleEditEventChange} />
+          handleEditEventChange={input.handleEditEventChange}
+          allUsers={input.allUsers}
+          newComment={input.newComment}
+          handleNewCommentChange={input.handleNewCommentChange}
+          handleNewCommentSubmit={input.handleNewCommentSubmit}  />
 
       ) // end of return
     }) // end of input.data.map

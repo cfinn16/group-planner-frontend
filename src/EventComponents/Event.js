@@ -1,6 +1,7 @@
 import React from 'react'
 import EditEvent from './EditEvent.js'
 import {Button} from 'react-materialize'
+import CommentsContainer from '../CommentComponents/CommentsContainer.js'
 
 
 /****************** HELPER METHODS ************************************/
@@ -41,6 +42,14 @@ const renderEvent = (props) => {
           onClick={props.handleEventDelete} >
           Delete
         </Button>
+
+        <CommentsContainer
+          commentsData={props.data.comments}
+          allUsers={props.allUsers}
+          newComment={props.newComment}
+          handleNewCommentChange={props.handleNewCommentChange}
+          handleNewCommentSubmit={props.handleNewCommentSubmit}
+          selectedEventId={props.selectedEventId} />
       </div>
 
     ) // end of return
@@ -52,6 +61,9 @@ const renderEvent = (props) => {
 
 
 const Event = (props) => {
+
+
+
   return (
 
     <div className="card-panel teal card-text">

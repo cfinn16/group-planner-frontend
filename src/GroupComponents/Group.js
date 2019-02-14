@@ -20,7 +20,6 @@ const Group = (props) => {
         onClick={ (event) => props.handleOnClickGroups(event) } >
 
         { props.groupData.name }
-
       </h4>
 
       {

@@ -19,6 +19,7 @@ const usersURL = `http://localhost:3001/api/v1/users/`
 const groupsURL = `http://localhost:3001/api/v1/groups/`
 const userGroupsURL = `http://localhost:3001/api/v1/user_groups/`
 const eventsURL = `http://localhost:3001/api/v1/events/`
+const commentsURL = `http://localhost:3001/api/v1/comments/`
 
 
 /************************ END OF CONSTANTS ****************************/
@@ -33,13 +34,14 @@ class App extends Component {
 
 
   state = {
-    userId: 1,
+    userId: 2,
     data: null,
     allUsers: [],
     selectedGroupId: 0,
     selectedGroupEvents: [],
     selectedEventId: 0,
     editingEventId: 0,
+    selectedEventsComments: [],
     eventsContainerDisplay: "",
     newGroupName: "",
     newGroupUsers: [],
@@ -54,6 +56,11 @@ class App extends Component {
       name: "",
       category: "",
       description: ""
+    },
+    newComment: {
+      userId: 0,
+      eventId: 0,
+      content: ""
     }
   } // end of state
 
@@ -195,8 +202,11 @@ class App extends Component {
   handleOnClickEvents = (event) => {
     this.setState({
       selectedEventId: parseInt(event.target.id),
-      editingEventId: 0
+      editingEventId: 0,
+      selectedEventsComments: this.state.data.comments
     })
+
+    console.log("handleOnClickEvents: ", this.state.data)
 
   } // end of handleOnClickEvents()
 /* -------------------------------------------------------------------*/
@@ -366,6 +376,72 @@ class App extends Component {
 /*********************** END OF EVENT FUNCTIONS ***********************/
 
 
+/*********************** COMMENT FUNCTIONS ****************************/
+
+/* -------------------------------------------------------------------*/
+handleNewCommentChange = (event) => {
+  this.setState({
+    newComment: {
+      userId: this.state.userId,
+      eventId: this.state.selectedEventId,
+      content: event.target.value
+    } // end of this.setState
+  }) // end of this.setState
+} // end of handleCommentChange()
+/* -------------------------------------------------------------------*/
+
+
+/* -------------------------------------------------------------------*/
+handleNewCommentSubmit = (event) => {
+  event.preventDefault()
+
+  fetch(commentsURL, {
+    method: "post",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      user_id: this.state.newComment.userId,
+      event_id: this.state.newComment.eventId,
+      content: this.state.newComment.content
+    })
+  })
+  .then( res => res.json())
+  .then( newComment => {
+
+    const updatedGroupEvents = this.state.selectedGroupEvents.map( event => {
+      if (event.id === this.state.selectedEventId) {
+        return {...event, comments: [...event.comments, newComment] }
+      } else {
+        return event
+      }
+    }) // end of updatedGroupEvents
+
+    const updatedGroups = this.state.data.groups.map(group => {
+      if (group.id === this.state.selectedGroupId) {
+        return {...group, events: updatedGroupEvents}
+      } else {
+        return group
+      }
+    }) // end of updatedGroups
+
+    this.setState({
+      newComment: {
+        userId: 0,
+        eventId: 0,
+        content: ""
+      },
+      data: {...this.state.data, groups: updatedGroups},
+      selectedGroupEvents: updatedGroupEvents
+
+    }) // end of this.setState
+  }) // end of .then
+} // end of handleNewEventSubmit()
+/* -------------------------------------------------------------------*/
+
+/*********************** END OF COMMENT FUNCTIONS *********************/
+
 /*********************** MISC FUNCTIONS *******************************/
 
 //nothing in here
@@ -414,7 +490,10 @@ class App extends Component {
               handleEventEditSubmit={this.handleEventEditSubmit}
               editedEvent={this.state.editedEvent}
               editingEventId={this.state.editingEventId}
-              handleEditEventChange={this.handleEditEventChange} />
+              handleEditEventChange={this.handleEditEventChange}
+              newComment={this.state.newComment}
+              handleNewCommentChange={this.handleNewCommentChange}
+              handleNewCommentSubmit={this.handleNewCommentSubmit} />
           </div>
         </Row>
       </div>

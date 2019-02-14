@@ -16,7 +16,6 @@ class GroupsContainer extends React.Component {
           selectedGroupId={this.props.selectedGroupId} />
       ) // end of return
     }) // end of return arr.map
-
   } // end of renderGroups
 
   render() {
