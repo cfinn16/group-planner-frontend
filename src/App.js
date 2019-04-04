@@ -72,20 +72,24 @@ class App extends Component {
 
   componentDidMount() {
     console.log("Mounted")
-    fetch(`${usersURL}${this.props.userId}`)
-      .then(res => res.json())
-      .then(data => {
-        this.setState({
-          data: data,
-          userId: this.props.userId
+    if (!this.props.successfulLogin) {
+      this.props.history.push('/signup')
+    } else {
+      fetch(`${usersURL}${this.props.userId}`)
+        .then(res => res.json())
+        .then(data => {
+          this.setState({
+            data: data,
+            userId: this.props.userId
+          })
         })
-      })
 
-    fetch(usersURL)
-      .then(res => res.json())
-      .then(allUsers => {
-        this.setState({allUsers})
-      })
+      fetch(usersURL)
+        .then(res => res.json())
+        .then(allUsers => {
+          this.setState({allUsers})
+        })
+    }
   } // end of componentDidMount()
 
 
@@ -462,7 +466,7 @@ handleNewCommentSubmit = (event) => {
       <div className="App">
 
         <Navbar brand='WePlan' right>
-      
+
         </Navbar>
 
         <Row>

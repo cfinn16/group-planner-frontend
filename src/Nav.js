@@ -1,8 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import App from './App.js';
 import SignUpForm from './SignUpComponenets/SignUpForm.js';
-import { Route, Switch, Link, Redirect, BrowserRouter as Router } from 'react-router-dom';
+import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
 
 export default class Nav extends React.Component {
   state={
@@ -38,8 +37,6 @@ export default class Nav extends React.Component {
     this.setState({[e.target.name]: e.target.value}, () => console.log(this.state))
   }
 
-
-
   render(){
     return (
     <Router>
@@ -57,7 +54,7 @@ export default class Nav extends React.Component {
           )}/>
           <Route exact path="/"
             render={(props) => (
-            <App {...props} userId={this.state.userId}/>
+            <App {...props} userId={this.state.userId} successfulLogin={this.state.successfulLogin}/>
             )}/>
         </Switch>
         {this.state.successfulLogin && <Redirect to="/" push />}

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Input, Row, Button} from 'react-materialize'
+import {Input, Button} from 'react-materialize'
 
 
 const NewGroup = (props) => {
