@@ -15,16 +15,14 @@ import {Row, Navbar, NavItem} from 'react-materialize'
 /************************ CONSTANTS ***********************************/
 
 
-const usersURL = `http://localhost:3001/api/v1/users/`
-const groupsURL = `http://localhost:3001/api/v1/groups/`
-const userGroupsURL = `http://localhost:3001/api/v1/user_groups/`
-const eventsURL = `http://localhost:3001/api/v1/events/`
-const commentsURL = `http://localhost:3001/api/v1/comments/`
+const usersURL = `http://localhost:3000/api/v1/users/`
+const groupsURL = `http://localhost:3000/api/v1/groups/`
+const userGroupsURL = `http://localhost:3000/api/v1/user_groups/`
+const eventsURL = `http://localhost:3000/api/v1/events/`
+const commentsURL = `http://localhost:3000/api/v1/comments/`
 
 
 /************************ END OF CONSTANTS ****************************/
-
-
 
 // start of App class
 class App extends Component {
@@ -128,8 +126,6 @@ class App extends Component {
 
 /* -------------------------------------------------------------------*/
   handleNewGroupSubmit = (event) => {
-    // let newGroupObject = {}
-
     event.preventDefault()
 
     fetch(groupsURL, {
@@ -465,9 +461,7 @@ handleNewCommentSubmit = (event) => {
     return (
       <div className="App">
 
-        <Navbar brand='WePlan' right>
-
-        </Navbar>
+        <Navbar brand='WePlan' right></Navbar>
 
         <Row>
           <div className="col s3">

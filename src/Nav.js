@@ -1,24 +1,25 @@
+
 import React from 'react';
 import App from './App.js';
 import SignUpForm from './SignUpComponenets/SignUpForm.js';
 import { Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
 
 export default class Nav extends React.Component {
-  state={
+  state = {
     userId: 0,
     users: [],
     logInName: "",
     logInEmail: "",
     successfulLogin: false,
-  }
+  } // end of state()
 
   componentDidMount() {
-    fetch('http://localhost:3001/api/v1/users/')
+    fetch('http://localhost:3000/api/v1/users/')
      .then(res => res.json())
      .then(users => {
        this.setState({users})
      })
-  }
+  } // end of componentDidMount()
 
   handleLogInSubmit = (e) => {
     e.preventDefault()
@@ -29,13 +30,13 @@ export default class Nav extends React.Component {
           successfulLogin: true
         })
     } else {
-      console.log("Sorry dude")
+      console.log("User Not Found")
     }
-  }
+  } // end of handleLogInSubmit()
 
   handleLogInInput = (e) => {
     this.setState({[e.target.name]: e.target.value}, () => console.log(this.state))
-  }
+  } // end of handleLogInInput()
 
   render(){
     return (
@@ -49,8 +50,7 @@ export default class Nav extends React.Component {
             handleLogInSubmit={this.handleLogInSubmit}
             handleLogInInput={this.handleLogInInput}
             logInName={this.state.logInName}
-            logInEmail={this.state.logInEmail}
-            />
+            logInEmail={this.state.logInEmail} />
           )}/>
           <Route exact path="/"
             render={(props) => (
@@ -61,6 +61,5 @@ export default class Nav extends React.Component {
       </div>
     </Router>
     )
-  }
-
+  } // end of render()
 }
